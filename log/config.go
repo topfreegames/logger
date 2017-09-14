@@ -15,6 +15,7 @@ type config struct {
 	KafkaBrokers       string `envconfig:"DEIS_KAFKA_BROKERS" default:""`
 	KafkaTopic         string `envconfig:"DEIS_KAFKA_TOPIC" default:"log-*"`
 	KafkaGroupID       string `envconfig:"DEIS_KAFKA_GROUP_ID" default:"deis-logs-consumer"`
+	MessageType        string `envconfig:"DEIS_MESSAGE_TYPE" default:"json"`
 	NSQHost            string `envconfig:"DEIS_NSQD_SERVICE_HOST" default:""`
 	NSQPort            int    `envconfig:"DEIS_NSQD_SERVICE_PORT_TRANSPORT" default:"4150"`
 	NSQTopic           string `envconfig:"NSQ_TOPIC" default:"logs"`
@@ -31,7 +32,7 @@ func (c config) stopTimeoutDuration() time.Duration {
 	return time.Duration(c.StopTimeoutSeconds) * time.Second
 }
 
-func parseConfig(appName string) (*config, error) {
+func ParseConfig(appName string) (*config, error) {
 	ret := new(config)
 	if err := envconfig.Process(appName, ret); err != nil {
 		return nil, err

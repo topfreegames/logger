@@ -36,7 +36,7 @@ func (a *nsqAggregator) Listen() error {
 	if !a.listening {
 		a.listening = true
 		var err error
-		a.cfg, err = parseConfig(appName)
+		a.cfg, err = ParseConfig(appName)
 		if err != nil {
 			l.Fatalf("config error: %s: ", err)
 		}

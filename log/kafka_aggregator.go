@@ -32,7 +32,7 @@ func (a *kafkaAggregator) Listen() error {
 		a.run = true
 
 		var err error
-		a.cfg, err = parseConfig(appName)
+		a.cfg, err = ParseConfig(appName)
 		if err != nil {
 			l.Fatalf("config error: %s: ", err)
 		}
@@ -58,23 +58,32 @@ func (a *kafkaAggregator) Listen() error {
 
 		go func() {
 			for a.run == true {
+				var err error
 				select {
 				case ev := <-a.consumer.Events():
 					switch e := ev.(type) {
 					case kafka.AssignedPartitions:
-						err := a.consumer.Assign(e.Partitions)
+						err = a.consumer.Assign(e.Partitions)
 						if err != nil {
 							l.Println("Failed to assign partitions.")
 						}
 					case kafka.RevokedPartitions:
-						err := a.consumer.Unassign()
+						err = a.consumer.Unassign()
 						if err != nil {
 							l.Println("Failed to unassign partitions.")
 						}
 					case *kafka.Message:
-						handle(e.Value, a.storadeAdapter)
+						var err error
+						if a.cfg.MessageType == "json" {
+							err = handle(e.Value, a.storadeAdapter)
+						} else {
+							err = handleMsgPack(e.Value, a.storadeAdapter)
+						}
+
+						if err != nil {
+							l.Printf("Error processing message: %s \n message: %s", err, string(e.Value))
+						}
 					case kafka.PartitionEOF:
-						l.Printf("%% Reached %v\n", e)
 					case kafka.Error:
 						a.run = false
 						a.errorChannel <- e

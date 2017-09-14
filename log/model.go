@@ -20,6 +20,15 @@ type Message struct {
 	Time       time.Time  `json:"time" msgpack:"time"`
 }
 
+// MessageWithDockerString fields when docker is a string
+type MessageWithDockerString struct {
+	Log        string     `json:"log" msgpack:"log"`
+	Stream     string     `json:"stream" msgpack:"stream"`
+	Kubernetes Kubernetes `json:"kubernetes" msgpack:"kubernetes"`
+	Docker     string     `json:"docker" msgpack:"docker"`
+	Time       time.Time  `json:"@timestamp" msgpack:"@timestamp"`
+}
+
 // Kubernetes specific log message fields
 type Kubernetes struct {
 	Namespace     string            `json:"namespace_name" msgpack:"namespace_name"`

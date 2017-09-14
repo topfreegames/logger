@@ -1,10 +1,14 @@
-hash: baad570d20cf62f74d7fdbaeaa73536204b8af2d78c8143f2fb5275468dd7531
-updated: 2017-09-14T17:31:31.137070145-03:00
+hash: 568109ce7774880b58e6cae4e9c3cd22393e70ed3f613c002aea8bac2ec9ae60
+updated: 2017-09-15T17:35:57.51854698-03:00
 imports:
 - name: github.com/confluentinc/confluent-kafka-go
   version: a9b5c269c66e9a2eb5f195563b2f01e65a84c527
   subpackages:
   - kafka
+- name: github.com/golang/protobuf
+  version: 11b8df160996e00fd4b55cbaafb3d84ec6d50fa8
+  subpackages:
+  - proto
 - name: github.com/golang/snappy
   version: 553a641470496b2327abcac10b36396bd98e45c9
 - name: github.com/gorilla/context
@@ -15,12 +19,31 @@ imports:
   version: bc1350181c239ebcef7a398f576160021f5dfed6
 - name: github.com/nsqio/go-nsq
   version: 1336c299dd900d045fb6df51fc02adf26cde5414
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
 - name: github.com/vmihailenco/msgpack
   version: de4b4857c10538d591bee30e8114176008f8b9d0
+  subpackages:
+  - codes
+- name: golang.org/x/net
+  version: c2528b2dd8352441850638a8bb678c2ad056fd3e
+  subpackages:
+  - context
+- name: google.golang.org/appengine
+  version: d9a072cfa7b9736e44311ef77b3e09d804bfa599
+  subpackages:
+  - datastore
+  - internal
+  - internal/app_identity
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/modules
+  - internal/remote_api
 - name: gopkg.in/bsm/ratelimit.v1
   version: db14e161995a5177acef654cb0dd785e8ee8bc22
 - name: gopkg.in/redis.v3

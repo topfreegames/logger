@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	r "gopkg.in/redis.v3"
@@ -27,6 +28,7 @@ type messagePipeliner struct {
 	timeoutTicker *time.Ticker
 	queuedApps    map[string]bool
 	errCh         chan error
+	rwLock        *sync.RWMutex
 }
 
 func newMessagePipeliner(bufferSize int, redisClient *r.Client, timeout time.Duration, errCh chan error) *messagePipeliner {
@@ -36,12 +38,15 @@ func newMessagePipeliner(bufferSize int, redisClient *r.Client, timeout time.Dur
 		timeoutTicker: time.NewTicker(timeout),
 		queuedApps:    map[string]bool{},
 		errCh:         errCh,
+		rwLock:        &sync.RWMutex{},
 	}
 }
 
 func (mp *messagePipeliner) addMessage(message *message) {
 	if err := mp.pipeline.RPush(message.app, message.messageBody).Err(); err == nil {
+		mp.rwLock.Lock()
 		mp.queuedApps[message.app] = true
+		mp.rwLock.Unlock()
 		mp.messageCount++
 	} else {
 		mp.errCh <- fmt.Errorf("Error adding rpush to %s to the pipeline: %s", message.app, err)
@@ -49,6 +54,8 @@ func (mp *messagePipeliner) addMessage(message *message) {
 }
 
 func (mp messagePipeliner) execPipeline() {
+	defer mp.rwLock.RUnlock()
+	mp.rwLock.RLock()
 	for app := range mp.queuedApps {
 		if err := mp.pipeline.LTrim(app, int64(-1*mp.bufferSize), -1).Err(); err != nil {
 			mp.errCh <- fmt.Errorf("Error adding ltrim of %s to the pipeline: %s", app, err)

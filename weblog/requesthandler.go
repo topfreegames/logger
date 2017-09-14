@@ -2,14 +2,22 @@ package weblog
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gorilla/mux"
+	uuid "github.com/satori/go.uuid"
 
+	logger "github.com/deis/logger/log"
 	"github.com/deis/logger/storage"
+)
+
+const (
+	appName = "logger"
 )
 
 type requestHandler struct {
@@ -64,4 +72,84 @@ func (h requestHandler) deleteLogs(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
+	connectionOpen := true
+	notify := w.(http.CloseNotifier).CloseNotify()
+	read, write := io.Pipe()
+
+	go func() {
+		<-notify
+		connectionOpen = false
+	}()
+
+	app := mux.Vars(r)["app"]
+
+	cfg, err := logger.ParseConfig(appName)
+	if err != nil {
+		log.Printf("config error: %s: ", err)
+		return
+	}
+
+	c, err := kafka.NewConsumer(&kafka.ConfigMap{
+		"bootstrap.servers":               cfg.KafkaBrokers,
+		"group.id":                        "logs-tail-" + uuid.NewV4().String(),
+		"go.events.channel.enable":        true,
+		"go.application.rebalance.enable": true,
+		"enable.auto.commit":              false,
+		"default.topic.config": kafka.ConfigMap{
+			"auto.offset.reset":  "latest",
+			"auto.commit.enable": false,
+		},
+	})
+
+	if err != nil {
+		log.Printf("kafka error: %s: ", err)
+		return
+	}
+
+	c.Subscribe(cfg.KafkaTopic, nil)
+	defer c.Close()
+
+	go func() {
+		defer write.Close()
+		for connectionOpen == true {
+			var err error
+			select {
+			case ev := <-c.Events():
+				switch e := ev.(type) {
+				case kafka.AssignedPartitions:
+					err = c.Assign(e.Partitions)
+					if err != nil {
+						log.Println("Failed to assign partitions.")
+					}
+				case kafka.RevokedPartitions:
+					err = c.Unassign()
+					if err != nil {
+						log.Println("Failed to unassign partitions.")
+					}
+				case *kafka.Message:
+					var label string
+					var message string
+
+					if cfg.MessageType == "json" {
+						label, message = logger.HandleJsonTail(e.Value)
+					} else {
+						label, message = logger.HandleMsgPackTail(e.Value)
+					}
+
+					if label == app {
+						fmt.Fprintf(write, "%s\n", strings.TrimSuffix(message, "\n"))
+					}
+				case kafka.PartitionEOF:
+				case kafka.Error:
+					connectionOpen = false
+				default:
+					log.Println("ignored kafka event")
+				}
+			}
+		}
+	}()
+	io.Copy(w, read)
 }

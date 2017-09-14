@@ -15,3 +15,5 @@ import:
   version: ~0.9.4
   subpackages:
   - kafka
+- package: github.com/satori/go.uuid
+  version: ~1.1.0

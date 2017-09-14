@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/deis/logger/storage"
+	"github.com/vmihailenco/msgpack"
 )
 
 const (
@@ -24,8 +25,26 @@ var (
 func handle(rawMessage []byte, storageAdapter storage.Adapter) error {
 	message := new(Message)
 	if err := json.Unmarshal(rawMessage, message); err != nil {
-		return err
+		message := new(MessageWithDockerString)
+		if err := json.Unmarshal(rawMessage, message); err != nil {
+			return err
+		}
 	}
+	return processMessage(message, storageAdapter)
+}
+
+func handleMsgPack(rawMessage []byte, storageAdapter storage.Adapter) error {
+	message := new(Message)
+	if err := msgpack.Unmarshal(rawMessage, message); err != nil {
+		message := new(MessageWithDockerString)
+		if err := msgpack.Unmarshal(rawMessage, message); err != nil {
+			return err
+		}
+	}
+	return processMessage(message, storageAdapter)
+}
+
+func processMessage(message *Message, storageAdapter storage.Adapter) error {
 	if fromController(message) {
 		storageAdapter.Write(getApplicationFromControllerMessage(message), buildControllerLogMessage(message))
 	} else {
@@ -35,8 +54,43 @@ func handle(rawMessage []byte, storageAdapter storage.Adapter) error {
 	return nil
 }
 
+func HandleJsonTail(rawMessage []byte) (string, string) {
+	message := new(Message)
+	if err := json.Unmarshal(rawMessage, message); err != nil {
+		message := new(MessageWithDockerString)
+		if err := json.Unmarshal(rawMessage, message); err != nil {
+			return "", ""
+		}
+	}
+	return processTailMessage(message)
+}
+
+func HandleMsgPackTail(rawMessage []byte) (string, string) {
+	message := new(Message)
+	if err := msgpack.Unmarshal(rawMessage, message); err != nil {
+		message := new(MessageWithDockerString)
+		if err := msgpack.Unmarshal(rawMessage, message); err != nil {
+			return "", ""
+		}
+	}
+	return processTailMessage(message)
+}
+
+func processTailMessage(message *Message) (string, string) {
+
+	if fromController(message) {
+		return getApplicationFromControllerMessage(message), buildControllerLogMessage(message)
+	} else {
+		labels := message.Kubernetes.Labels
+		return labels["app"], buildApplicationLogMessage(message)
+	}
+}
+
 func fromController(message *Message) bool {
 	matched, _ := regexp.MatchString(controllerContainerName, message.Kubernetes.ContainerName)
+	if matched {
+		matched, _ = regexp.MatchString(controllerPattern, message.Log)
+	}
 	return matched
 }
 
