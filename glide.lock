@@ -1,26 +1,30 @@
-hash: f3b2325d3480fc63a4d4e32f74387dbf6e59607ae0c03d3685f98502f4817f11
-updated: 2016-12-06T17:35:19.509392042Z
+hash: baad570d20cf62f74d7fdbaeaa73536204b8af2d78c8143f2fb5275468dd7531
+updated: 2017-09-14T17:31:31.137070145-03:00
 imports:
-- name: github.com/gorilla/context
-  version: aed02d124ae4a0e94fea4541c8effd05bf0c8296
-- name: github.com/gorilla/mux
-  version: 9fa818a44c2bf1396a17f9d5a3c0f6dd39d2ff8e
-- name: github.com/kelseyhightower/envconfig
-  version: 5c008110b20b657eb7e005b83d0a5f6aa6bb5f4b
-- name: github.com/mreiferson/go-snappystream
-  version: 028eae7ab5c4c9e2d1cb4c4ca1e53259bbe7e504
+- name: github.com/confluentinc/confluent-kafka-go
+  version: a9b5c269c66e9a2eb5f195563b2f01e65a84c527
   subpackages:
-  - snappy-go
+  - kafka
+- name: github.com/golang/snappy
+  version: 553a641470496b2327abcac10b36396bd98e45c9
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/gorilla/mux
+  version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
+- name: github.com/kelseyhightower/envconfig
+  version: bc1350181c239ebcef7a398f576160021f5dfed6
 - name: github.com/nsqio/go-nsq
-  version: d71fb89c9e0263aaed89645b0b168e11ccf597b1
+  version: 1336c299dd900d045fb6df51fc02adf26cde5414
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
+- name: github.com/vmihailenco/msgpack
+  version: de4b4857c10538d591bee30e8114176008f8b9d0
 - name: gopkg.in/bsm/ratelimit.v1
   version: db14e161995a5177acef654cb0dd785e8ee8bc22
 - name: gopkg.in/redis.v3
-  version: a905127dc89ca51a241eacf70757a40423ab93d0
+  version: b5e368500d0a508ef8f16e9c2d4025a8a46bcc29
   subpackages:
   - internal
   - internal/consistenthash
@@ -32,6 +36,6 @@ testImports:
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
-  version: 792786c7400a136282c1664665ae0a8db921c6c2
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib

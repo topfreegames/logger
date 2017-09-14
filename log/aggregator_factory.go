@@ -11,6 +11,8 @@ import (
 func NewAggregator(aggregatorType string, storageAdapter storage.Adapter) (Aggregator, error) {
 	if aggregatorType == "nsq" {
 		return newNSQAggregator(storageAdapter), nil
+	} else if aggregatorType == "kafka" {
+		return newKafkaAggregator(storageAdapter), nil
 	}
 	return nil, fmt.Errorf("Unrecognized aggregator type: '%s'", aggregatorType)
 }

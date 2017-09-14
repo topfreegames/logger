@@ -12,6 +12,9 @@ const (
 )
 
 type config struct {
+	KafkaBrokers       string `envconfig:"DEIS_KAFKA_BROKERS" default:""`
+	KafkaTopic         string `envconfig:"DEIS_KAFKA_TOPIC" default:"log-*"`
+	KafkaGroupID       string `envconfig:"DEIS_KAFKA_GROUP_ID" default:"deis-logs-consumer"`
 	NSQHost            string `envconfig:"DEIS_NSQD_SERVICE_HOST" default:""`
 	NSQPort            int    `envconfig:"DEIS_NSQD_SERVICE_PORT_TRANSPORT" default:"4150"`
 	NSQTopic           string `envconfig:"NSQ_TOPIC" default:"logs"`

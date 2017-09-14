@@ -13,24 +13,24 @@ import "time"
 
 // Message fields
 type Message struct {
-	Log        string     `json:"log"`
-	Stream     string     `json:"stream"`
-	Kubernetes Kubernetes `json:"kubernetes"`
-	Docker     Docker     `json:"docker"`
-	Time       time.Time  `json:"time"`
+	Log        string     `json:"log" msgpack:"log"`
+	Stream     string     `json:"stream" msgpack:"stream"`
+	Kubernetes Kubernetes `json:"kubernetes" msgpack:"kubernetes"`
+	Docker     Docker     `json:"docker" msgpack:"docker"`
+	Time       time.Time  `json:"time" msgpack:"time"`
 }
 
 // Kubernetes specific log message fields
 type Kubernetes struct {
-	Namespace     string            `json:"namespace_name"`
-	PodID         string            `json:"pod_id"`
-	PodName       string            `json:"pod_name"`
-	ContainerName string            `json:"container_name"`
-	Labels        map[string]string `json:"labels"`
-	Host          string            `json:"host"`
+	Namespace     string            `json:"namespace_name" msgpack:"namespace_name"`
+	PodID         string            `json:"pod_id" msgpack:"pod_id"`
+	PodName       string            `json:"pod_name" msgpack:"pod_name"`
+	ContainerName string            `json:"container_name" msgpack:"container_name"`
+	Labels        map[string]string `json:"labels" msgpack:"labels"`
+	Host          string            `json:"host" msgpack:"host"`
 }
 
 // Docker specific log message fields
 type Docker struct {
-	ContainerID string `json:"container_id"`
+	ContainerID string `json:"container_id" msgpack:"container_id"`
 }
