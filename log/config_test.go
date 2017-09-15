@@ -33,7 +33,7 @@ func TestParseConfig(t *testing.T) {
 	port, err := strconv.Atoi(os.Getenv("DEIS_NSQD_SERVICE_PORT_TRANSPORT"))
 	assert.NoError(t, err)
 
-	c, err := parseConfig("foo")
+	c, err := ParseConfig("foo")
 	assert.NoError(t, err)
 	assert.Equal(t, c.NSQHost, os.Getenv("DEIS_NSQD_SERVICE_HOST"))
 	assert.Equal(t, c.NSQPort, port)
