@@ -14,7 +14,7 @@ const (
 	podPattern              = `(\w.*)-(\w.*)-(\w.*)-(\w.*)`
 	controllerPattern       = `^(INFO|WARN|DEBUG|ERROR)\s+(\[(\S+)\])+:(.*)`
 	controllerContainerName = "deis-controller"
-	timeFormat              = "2006-01-02T15:04:05-07:00"
+	timeFormat              = "2006-01-02T15:04:05.000000000-07:00"
 )
 
 var (
