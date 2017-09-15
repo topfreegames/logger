@@ -92,6 +92,8 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("Tail started.")
+
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":               cfg.KafkaBrokers,
 		"group.id":                        "logs-tail-" + uuid.NewV4().String(),
@@ -110,7 +112,9 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c.Subscribe(cfg.KafkaTopic, nil)
+	defer c.Unsubscribe()
 	defer c.Close()
+	defer log.Println("Tail Closed.")
 
 	go func() {
 		defer write.Close()
@@ -122,12 +126,12 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 				case kafka.AssignedPartitions:
 					err = c.Assign(e.Partitions)
 					if err != nil {
-						log.Println("Failed to assign partitions.")
+						log.Println("[Tail] Failed to assign partitions.")
 					}
 				case kafka.RevokedPartitions:
 					err = c.Unassign()
 					if err != nil {
-						log.Println("Failed to unassign partitions.")
+						log.Println("[Tail] Failed to unassign partitions.")
 					}
 				case *kafka.Message:
 					var label string
@@ -146,7 +150,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 				case kafka.Error:
 					connectionOpen = false
 				default:
-					log.Println("ignored kafka event")
+					log.Println("[Tail] ignored kafka event")
 				}
 			}
 		}
