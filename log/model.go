@@ -17,7 +17,7 @@ type Message struct {
 	Stream     string     `json:"stream" msgpack:"stream"`
 	Kubernetes Kubernetes `json:"kubernetes" msgpack:"kubernetes"`
 	Docker     Docker     `json:"docker" msgpack:"docker"`
-	Time       time.Time  `json:"time" msgpack:"time"`
+	Time       time.Time  `json:"@timestamp" msgpack:"@timestamp"`
 }
 
 // MessageWithDockerString fields when docker is a string
