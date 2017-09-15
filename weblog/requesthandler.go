@@ -112,9 +112,6 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c.Subscribe(cfg.KafkaTopic, nil)
-	defer c.Unsubscribe()
-	defer c.Close()
-	defer log.Println("Tail Closed.")
 
 	go func() {
 		defer write.Close()
@@ -156,4 +153,17 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 	io.Copy(w, read)
+
+	err = c.Unsubscribe()
+	if err != nil {
+		log.Printf("kafka unsubscribe error: %s: ", err)
+		return
+	}
+
+	err = c.Close()
+	if err != nil {
+		log.Printf("kafka close error: %s: ", err)
+		return
+	}
+	log.Println("Tail Closed.")
 }
