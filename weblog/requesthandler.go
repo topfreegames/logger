@@ -81,6 +81,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		<-notify
+		log.Println("Tail connection closed.")
 		connectionOpen = false
 	}()
 
@@ -116,7 +117,6 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		defer write.Close()
 		for connectionOpen == true {
-			var err error
 			select {
 			case ev := <-c.Events():
 				switch e := ev.(type) {
