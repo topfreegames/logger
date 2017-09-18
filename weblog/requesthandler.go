@@ -88,8 +88,10 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	app := mux.Vars(r)["app"]
 	process := mux.Vars(r)["process"]
 
-	if process == "" {
-		process = ".*"
+	tailTopic := "^logs-" + app + "-" + ".*"
+
+	if process != "" {
+		tailTopic = "logs-" + app + "-" + process
 	}
 
 	cfg, err := logger.ParseConfig(appName)
@@ -117,7 +119,9 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.Subscribe("^logs-"+app+"-"+process, nil)
+	log.Printf("Tail on topic: %s", tailTopic)
+
+	c.Subscribe(tailTopic, nil)
 
 	go func() {
 		defer write.Close()
