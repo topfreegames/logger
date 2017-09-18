@@ -86,10 +86,10 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	app := mux.Vars(r)["app"]
-	appType := mux.Vars(r)["app_type"]
+	process := mux.Vars(r)["process"]
 
-	if appType == "" {
-		appType = ".*"
+	if process == "" {
+		process = ".*"
 	}
 
 	cfg, err := logger.ParseConfig(appName)
@@ -117,7 +117,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.Subscribe("^logs-"+app+"-"+appType, nil)
+	c.Subscribe("^logs-"+app+"-"+process, nil)
 
 	go func() {
 		defer write.Close()
