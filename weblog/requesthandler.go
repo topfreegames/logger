@@ -86,7 +86,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	app := mux.Vars(r)["app"]
-	process := mux.Vars(r)["process"]
+	process := r.URL.Query().Get("process")
 
 	tailTopic := "^logs-" + app + "-" + ".*"
 
