@@ -86,6 +86,11 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	app := mux.Vars(r)["app"]
+	appType := mux.Vars(r)["app_type"]
+
+	if appType == "" {
+		appType = ".*"
+	}
 
 	cfg, err := logger.ParseConfig(appName)
 	if err != nil {
@@ -112,7 +117,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.Subscribe(cfg.KafkaTopic, nil)
+	c.Subscribe("^logs-"+app+"-"+appType, nil)
 
 	go func() {
 		defer write.Close()
