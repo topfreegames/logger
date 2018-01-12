@@ -6,10 +6,6 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-const (
-	appName = "logger"
-)
-
 type redisConfig struct {
 	Host                   string `envconfig:"DEIS_LOGGER_REDIS_SERVICE_HOST" default:""`
 	Port                   int    `envconfig:"DEIS_LOGGER_REDIS_SERVICE_PORT" default:"6379"`

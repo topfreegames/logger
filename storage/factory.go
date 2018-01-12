@@ -36,5 +36,12 @@ func NewAdapter(adapterType string, numLines int) (Adapter, error) {
 		}
 		return adapter, nil
 	}
+	if adapterType == "elasticsearch" {
+		adapter, err := NewESStorageAdapter()
+		if err != nil {
+			return nil, err
+		}
+		return adapter, nil
+	}
 	return nil, errUnrecognizedStorageAdapterType{adapterType: adapterType}
 }

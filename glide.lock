@@ -1,5 +1,5 @@
-hash: 568109ce7774880b58e6cae4e9c3cd22393e70ed3f613c002aea8bac2ec9ae60
-updated: 2017-09-15T17:35:57.51854698-03:00
+hash: ff4c2b60ad4fa2ff2c1e7440d65a83db734e85ef2d468221ec7e559fd3def22e
+updated: 2018-01-12T16:28:12.240375-02:00
 imports:
 - name: github.com/confluentinc/confluent-kafka-go
   version: a9b5c269c66e9a2eb5f195563b2f01e65a84c527
@@ -19,6 +19,8 @@ imports:
   version: bc1350181c239ebcef7a398f576160021f5dfed6
 - name: github.com/nsqio/go-nsq
   version: 1336c299dd900d045fb6df51fc02adf26cde5414
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/satori/go.uuid
   version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/stretchr/testify
@@ -26,7 +28,7 @@ imports:
   subpackages:
   - assert
 - name: github.com/vmihailenco/msgpack
-  version: de4b4857c10538d591bee30e8114176008f8b9d0
+  version: 40b1cac89761d843bbb96b8b27c746ba5937322a
   subpackages:
   - codes
 - name: golang.org/x/net
@@ -46,6 +48,11 @@ imports:
   - internal/remote_api
 - name: gopkg.in/bsm/ratelimit.v1
   version: db14e161995a5177acef654cb0dd785e8ee8bc22
+- name: gopkg.in/olivere/elastic.v5
+  version: 75b071e35066bfb592a0d770e4cd1e5a5e45edf0
+  subpackages:
+  - config
+  - uritemplates
 - name: gopkg.in/redis.v3
   version: b5e368500d0a508ef8f16e9c2d4025a8a46bcc29
   subpackages:

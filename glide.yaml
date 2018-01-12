@@ -17,3 +17,6 @@ import:
   - kafka
 - package: github.com/satori/go.uuid
   version: ~1.1.0
+- package: gopkg.in/olivere/elastic.v5
+- package: github.com/pkg/errors
+  version: ^0.8.0
