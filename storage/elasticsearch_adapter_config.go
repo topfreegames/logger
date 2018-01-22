@@ -11,7 +11,7 @@ const (
 type esconfig struct {
 	Host          string `envconfig:"DEIS_LOGGER_ELASTICSEARCH_SERVICE_HOST" default:"localhost"`
 	Port          int    `envconfig:"DEIS_LOGGER_ELASTICSEARCH_SERVICE_PORT" default:"9200"`
-	IndexTemplate int    `envconfig:"DEIS_LOGGER_ELASTICSEARCH_INDEX_TEMPLATE" default:"deis-%s"`
+	IndexTemplate string `envconfig:"DEIS_LOGGER_ELASTICSEARCH_INDEX_TEMPLATE" default:"deis-%s"`
 }
 
 func parseESConfig(appName string) (*esconfig, error) {

@@ -29,6 +29,7 @@ func TestParseConfig(t *testing.T) {
 	os.Setenv("NSQ_CHANNEL", "channel")
 	os.Setenv("NSQ_HANDLER_COUNT", "3")
 	os.Setenv("AGGREGATOR_STOP_TIMEOUT_SEC", "2")
+	os.Setenv("DEIS_NSQD_SERVICE_PORT_TRANSPORT", "4150")
 
 	port, err := strconv.Atoi(os.Getenv("DEIS_NSQD_SERVICE_PORT_TRANSPORT"))
 	assert.NoError(t, err)

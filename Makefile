@@ -14,7 +14,7 @@ REPO_PATH = github.com/deis/logger
 
 # The following variables describe the containerized development environment
 # and other build options
-DEV_ENV_IMAGE := quay.io/tfgco/go-dev:v1.5.1
+DEV_ENV_IMAGE := quay.io/deis/go-dev:0.20.0
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
 DEV_ENV_OPTS := --rm -v ${CURDIR}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR}
 DEV_ENV_CMD := docker run ${DEV_ENV_OPTS} ${DEV_ENV_IMAGE}
@@ -33,6 +33,7 @@ include versioning.mk
 
 REDIS_CONTAINER_NAME := test-redis-${VERSION}
 NSQ_CONTAINER_NAME := test-nsq-${VERSION}
+ELASTICSEARCH_CONTAINER_NAME := test-elasticsearch-${VERSION}
 
 SHELL_SCRIPTS = $(wildcard _scripts/util/*)
 
@@ -75,7 +76,7 @@ clean: check-docker
 
 test: test-style test-unit
 
-test-cover: start-test-redis start-test-nsq
+test-cover: start-test-redis start-test-nsq start-test-elasticsearch
 	docker run ${DEV_ENV_OPTS} \
 		-it \
 		--link ${REDIS_CONTAINER_NAME}:TEST_REDIS \
@@ -109,6 +110,9 @@ start-test-redis:
 start-test-nsq:
 	docker run --name ${NSQ_CONTAINER_NAME} -d nsqio/nsq nsqd || true
 
+start-test-elasticsearch:
+	docker run --name ${ELASTICSEARCH_CONTAINER_NAME} -d elasticsearch:latest || true
+
 stop-test-redis:
 	docker kill ${REDIS_CONTAINER_NAME}
 	docker rm ${REDIS_CONTAINER_NAME}
@@ -117,15 +121,22 @@ stop-test-nsq:
 	docker kill ${NSQ_CONTAINER_NAME}
 	docker rm ${NSQ_CONTAINER_NAME}
 
-test-unit: start-test-redis start-test-nsq
+stop-test-elasticsearch:
+	docker kill ${ELASTICSEARCH_CONTAINER_NAME}
+	docker rm ${ELASTICSEARCH_CONTAINER_NAME}
+
+test-unit: start-test-redis start-test-nsq start-test-elasticsearch
 	docker run ${DEV_ENV_OPTS} \
 		--link ${REDIS_CONTAINER_NAME}:TEST_REDIS \
 		--link ${NSQ_CONTAINER_NAME}:TEST_NSQ \
+		--link ${ELASTICSEARCH_CONTAINER_NAME}:TEST_ELASTICSEARCH \
 		${DEV_ENV_IMAGE} bash -c \
 		'DEIS_LOGGER_REDIS_SERVICE_HOST=$$TEST_REDIS_PORT_6379_TCP_ADDR \
 		 DEIS_LOGGER_REDIS_SERVICE_PORT=$$TEST_REDIS_PORT_6379_TCP_PORT \
 		 DEIS_NSQD_SERVICE_HOST=$$TEST_NSQ_PORT_4150_TCP_ADDR \
 		 DEIS_NSQD_SERVICE_PORT_TRANSPORT=$$TEST_NSQ_PORT_4150_TCP_PORT \
-		 $(GOTEST) -tags="testredis" $$(glide nv)'
+		 DEIS_LOGGER_ELASTICSEARCH_SERVICE_HOST=$$TEST_ELASTICSEARCH_PORT_9200_TCP_ADDR \
+		 $(GOTEST) -tags="testelasticsearch" $$(glide nv)'
 	make stop-test-redis
 	make stop-test-nsq
+	make stop-test-elasticsearch

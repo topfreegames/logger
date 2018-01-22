@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"reflect"
 
 	"gopkg.in/olivere/elastic.v5"
 )
@@ -22,9 +23,7 @@ func NewESStorageAdapter() (Adapter, error) {
 	}
 
 	client, err := elastic.NewClient(
-		elastic.SetURL(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)),
-		elastic.SetHealthcheck(true),
-		elastic.SetSniff(true),
+		elastic.SetURL(fmt.Sprintf("http://%s:%d", cfg.Host, cfg.Port)),
 	)
 	if err != nil {
 		panic(err)
@@ -52,15 +51,19 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 	ctx := context.Background()
 	termQuery := elastic.NewTermQuery("kubernetes.labels.app", app)
 	searchResult, err := a.esClient.Search().
-		Index(fmt.Sprintf(indexTemplate, app)).
+		Index(fmt.Sprintf(a.indexTemplate, app)).
+		Query(termQuery).
 		Sort("@timestamp", false).
 		Size(lines).
 		Do(ctx)
 	if err != nil {
 		return nil, err
 	}
-	for _, item := range searchResult.Each() {
-		fmt.Printf("%s", item)
+
+	for _, item := range searchResult.Each(reflect.TypeOf(map[string]interface{}{})) {
+		t := item.(map[string]interface{})
+		fmt.Printf("here = %#v\n", t)
+		fmt.Println(t["log"].(string))
 	}
 	return nil, nil
 }
