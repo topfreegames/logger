@@ -25,23 +25,6 @@ func TestESReadFromNonExistingApp(t *testing.T) {
 	}
 }
 
-// const (
-// 	indexMapping = `{
-//                     "mappings" : {
-// 											"kubernetes": {
-// 												"properties": {
-// 													"labels": {
-// 														"type": "nested",
-// 														"properties": {
-// 															"app": { "type": "string" }
-// 														}
-// 													}
-// 												}
-// 											}
-//                     }
-//                   }`
-// )
-
 const (
 	indexMapping = `{
                     "mappings" : {
@@ -56,7 +39,8 @@ const (
 															}
 														}
 													},
-													"log": { "type": "string" }
+													"log": { "type": "string" },
+													"@timestamp": { "type": "date" }
 												}
 											}
                     }
@@ -102,7 +86,7 @@ func TestESLogs(t *testing.T) {
 	}
 
 	for i := 0; i < 5; i++ {
-		l := fmt.Sprintf(`{"kubernetes":{"labels":{"app":"%s"}}}`, app)
+		l := fmt.Sprintf(`{"kubernetes":{"labels":{"app":"%s"}},"@timestamp":"2018-01-22T20:21:05.000Z"}`, app)
 
 		res, err := client.Index().
 			Index(indexName).
