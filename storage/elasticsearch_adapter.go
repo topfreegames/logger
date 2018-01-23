@@ -65,10 +65,10 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 		results = append(results, item.(map[string]interface{})["log"].(string))
 	}
 	// reversing
-	for i := len(results)/2 - 1; i >= 0; i-- {
-		opp := len(results) - 1 - i
-		results[i], results[opp] = results[opp], results[i]
-	}
+	// for i := len(results)/2 - 1; i >= 0; i-- {
+	// 	opp := len(results) - 1 - i
+	// 	results[i], results[opp] = results[opp], results[i]
+	// }
 
 	if len(results) > 0 {
 		return results, nil
