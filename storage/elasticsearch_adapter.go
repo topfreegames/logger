@@ -62,13 +62,18 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 
 	results := []string{}
 	for _, item := range searchResult.Each(reflect.TypeOf(map[string]interface{}{})) {
-		results = append(results, item.(map[string]interface{})["log"].(string))
+		t := item.(map[string]interface{})
+		if v, ok := t["log"]; ok {
+			results = append(results, v.(string))
+		} else if v, ok := t["json"]; ok {
+			results = append(results, fmt.Sprintf("%#v", v.(string)))
+		}
 	}
 	// reversing
-	// for i := len(results)/2 - 1; i >= 0; i-- {
-	// 	opp := len(results) - 1 - i
-	// 	results[i], results[opp] = results[opp], results[i]
-	// }
+	for i := len(results)/2 - 1; i >= 0; i-- {
+		opp := len(results) - 1 - i
+		results[i], results[opp] = results[opp], results[i]
+	}
 
 	if len(results) > 0 {
 		return results, nil
