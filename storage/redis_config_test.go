@@ -19,6 +19,7 @@ func TestParseConfig(t *testing.T) {
 	os.Setenv("DEIS_LOGGER_REDIS_DB", "2")
 	os.Setenv("DEIS_LOGGER_REDIS_PIPELINE_LENGTH", "1")
 	os.Setenv("DEIS_LOGGER_REDIS_PIPELINE_TIMEOUT_SECONDS", "2")
+	os.Setenv("DEIS_LOGGER_REDIS_SERVICE_PORT", "6379")
 
 	p, err := strconv.Atoi(os.Getenv("DEIS_LOGGER_REDIS_SERVICE_PORT"))
 	assert.NoError(t, err)
