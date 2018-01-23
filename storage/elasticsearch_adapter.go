@@ -60,12 +60,16 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 		return nil, err
 	}
 
+	results := []string{}
 	for _, item := range searchResult.Each(reflect.TypeOf(map[string]interface{}{})) {
-		t := item.(map[string]interface{})
-		fmt.Printf("here = %#v\n", t)
-		fmt.Println(t["log"].(string))
+		results = append(results, item.(map[string]interface{})["log"].(string))
 	}
-	return nil, nil
+	// reversing
+	for i := len(results)/2 - 1; i >= 0; i-- {
+		opp := len(results) - 1 - i
+		results[i], results[opp] = results[opp], results[i]
+	}
+	return results, nil
 }
 
 // Destroy deletes an app-specific list from redis
