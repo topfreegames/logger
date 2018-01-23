@@ -62,17 +62,22 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 	}
 
 	results := []string{}
+	var logStr string
 	for _, item := range searchResult.Each(reflect.TypeOf(map[string]interface{}{})) {
 		t := item.(map[string]interface{})
 		if v, ok := t["log"]; ok {
-			results = append(results, v.(string))
+			logStr = v.(string)
 		} else if v, ok := t["json"]; ok {
 			str, err := json.Marshal(v.(map[string]interface{}))
 			if err != nil {
 				return nil, err
 			}
-			results = append(results, string(str))
+			logStr = string(str)
 		}
+		kubernetes := t["kubernetes"].(map[string]interface{})
+		pod := kubernetes["pod"].(map[string]interface{})
+		name := pod["name"].(string)
+		results = append(results, fmt.Sprintf("%s %s[%s]: %s", t["@timestamp"].(string), app, name, logStr))
 	}
 	// reversing
 	for i := len(results)/2 - 1; i >= 0; i-- {

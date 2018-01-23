@@ -21,6 +21,11 @@ const (
 																"properties": {
 																	"app": { "type": "keyword" }
 																}
+															},
+															"pod": {
+																"properties": {
+																	"name": { "type": "string" }
+																}
 															}
 														}
 													},
@@ -103,8 +108,11 @@ func TestESLogs(t *testing.T) {
 		)
 	}
 
+	writtenMessages := make([]string, 5)
 	for i := 0; i < 5; i++ {
-		l := fmt.Sprintf(`{"kubernetes":{"labels":{"app":"%s"}},"@timestamp":"2018-01-22T20:21:0%d.000Z","log":"message %d"}`, app, i, i)
+		timestamp := fmt.Sprintf("2018-01-22T20:21:0%d.000Z", i)
+		l := fmt.Sprintf(`{"kubernetes":{"labels":{"app":"%s"},"pod":{"name":"pod-name"}},"@timestamp":"%s","log":"message %d"}`, app, timestamp, i)
+		writtenMessages[i] = fmt.Sprintf("%s %s[pod-name]: message %d", timestamp, app, i)
 
 		_, err := client.Index().
 			Index(indexName).
@@ -139,7 +147,7 @@ func TestESLogs(t *testing.T) {
 		t.Errorf("only expected 5 log messages, got %d", len(messages))
 	}
 	for i := 0; i < 3; i++ {
-		expectedMessage := fmt.Sprintf("message %d", i+2)
+		expectedMessage := writtenMessages[i+2]
 		if messages[i] != expectedMessage {
 			t.Errorf("expected: \"%s\", got \"%s\"", expectedMessage, messages[i])
 		}
