@@ -56,3 +56,14 @@ func TestGetRedisBasedAdapter(t *testing.T) {
 		t.Errorf("Expected a redisAdapter, but got a %s", reflect.TypeOf(retType).String())
 	}
 }
+
+func TestGetESBasedAdapter(t *testing.T) {
+	a, err := NewAdapter("elasticsearch", 1)
+	if err != nil {
+		t.Error(err)
+	}
+	retType, ok := a.(*elasticsearchAdapter)
+	if !ok {
+		t.Errorf("Expected a elasticsearchAdapter, but got a %s", reflect.TypeOf(retType).String())
+	}
+}

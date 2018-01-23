@@ -69,7 +69,11 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 		opp := len(results) - 1 - i
 		results[i], results[opp] = results[opp], results[i]
 	}
-	return results, nil
+
+	if len(results) > 0 {
+		return results, nil
+	}
+	return nil, fmt.Errorf("Could not find logs for '%s'", app)
 }
 
 // Destroy deletes an app-specific list from redis

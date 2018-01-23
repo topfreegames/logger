@@ -10,22 +10,6 @@ import (
 	"time"
 )
 
-func TestESReadFromNonExistingApp(t *testing.T) {
-	a, err := NewESStorageAdapter()
-	if err != nil {
-		t.Error(err)
-	}
-	// No logs have been written; there should be no elasticsearch list for app
-	otherApp := fmt.Sprintf("%s-%d", app, 2)
-	messages, err := a.Read(otherApp, 10)
-	if messages != nil {
-		t.Error("Expected no messages, but got some")
-	}
-	if err == nil || err.Error() != fmt.Sprintf("Could not find logs for '%s'", otherApp) {
-		t.Error("Did not receive expected error message")
-	}
-}
-
 const (
 	indexMapping = `{
                     "mappings" : {
@@ -48,6 +32,41 @@ const (
                   }`
 )
 
+func TestESReadFromNonExistingApp(t *testing.T) {
+	ctx := context.Background()
+	a, err := NewESStorageAdapter()
+	if err != nil {
+		t.Error(err)
+	}
+	aa := a.(*elasticsearchAdapter)
+	client := aa.esClient
+	otherApp := fmt.Sprintf("%s-%d", app, 2)
+	indexName := fmt.Sprintf(aa.indexTemplate, otherApp)
+	client.DeleteIndex(indexName).Do(ctx)
+
+	res, err := client.
+		CreateIndex(indexName).
+		Body(indexMapping).
+		Do(ctx)
+	if err != nil {
+		t.Error(err)
+	}
+	if !res.Acknowledged {
+		t.Error(
+			errors.New("CreateIndex was not acknowledged. Check that timeout value is correct"),
+		)
+	}
+
+	// No logs have been written; there should be no elasticsearch list for app
+	messages, err := a.Read(otherApp, 10)
+	if messages != nil {
+		t.Error("Expected no messages, but got some")
+	}
+	if err == nil || err.Error() != fmt.Sprintf("Could not find logs for '%s'", otherApp) {
+		t.Error("Did not receive expected error message")
+	}
+}
+
 func TestESLogs(t *testing.T) {
 	ctx := context.Background()
 	a, err := NewESStorageAdapter()
@@ -55,8 +74,6 @@ func TestESLogs(t *testing.T) {
 		t.Error(err)
 	}
 	aa := a.(*elasticsearchAdapter)
-	a.Start()
-	defer a.Stop()
 	// And write a few logs to it, but do NOT fill it up
 	indexName := fmt.Sprintf(aa.indexTemplate, app)
 	client := aa.esClient
