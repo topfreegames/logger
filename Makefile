@@ -14,6 +14,7 @@ REPO_PATH = github.com/deis/logger
 
 # The following variables describe the containerized development environment
 # and other build options
+# toggle DEV_ENV_IMAGE to run tests / build
 DEV_ENV_IMAGE := quay.io/tfgco/go-dev:v1.5.1
 # DEV_ENV_IMAGE := quay.io/deis/go-dev:0.20.0
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}

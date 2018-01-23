@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"reflect"
@@ -66,7 +67,11 @@ func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
 		if v, ok := t["log"]; ok {
 			results = append(results, v.(string))
 		} else if v, ok := t["json"]; ok {
-			results = append(results, fmt.Sprintf("%#v", v.(string)))
+			str, err := json.Marshal(v.(map[string]interface{}))
+			if err != nil {
+				return nil, err
+			}
+			results = append(results, string(str))
 		}
 	}
 	// reversing
