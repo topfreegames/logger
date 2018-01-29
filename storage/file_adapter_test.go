@@ -21,7 +21,7 @@ func TestReadFromNonExistingApp(t *testing.T) {
 		t.Error(err)
 	}
 	// No logs have been writter; there should be no ringBuffer for app
-	messages, err := a.Read(app, 10)
+	messages, err := a.Read(app, 10, "")
 	if messages != nil {
 		t.Error("Expected no messages, but got some")
 	}
@@ -48,7 +48,7 @@ func TestLogs(t *testing.T) {
 		}
 	}
 	// Read more logs than there are
-	messages, err := a.Read(app, 8)
+	messages, err := a.Read(app, 8, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -57,7 +57,7 @@ func TestLogs(t *testing.T) {
 		t.Error("only expected 5 log messages")
 	}
 	// Read fewer logs than there are
-	messages, err = a.Read(app, 3)
+	messages, err = a.Read(app, 3, "")
 	if err != nil {
 		t.Error(err)
 	}

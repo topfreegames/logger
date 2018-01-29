@@ -9,7 +9,7 @@ import (
 
 type kafkaAggregator struct {
 	listening      bool
-	cfg            *config
+	cfg            *Config
 	consumer       *kafka.Consumer
 	run            bool
 	errorChannel   chan error

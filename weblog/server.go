@@ -24,8 +24,8 @@ type Server struct {
 	started bool
 }
 
-// New returns a new HTTP Server. The caller should call Start to start it and Close when finished
-// to shut it down.
+// NewServer returns a new HTTP Server. The caller should call Start to start it and Close
+// when finished to shut it down.
 func NewServer(storageAdapter storage.Adapter) *Server {
 	s := &Server{
 		Listener: defaultListener(),

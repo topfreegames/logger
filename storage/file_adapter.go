@@ -53,7 +53,7 @@ func (a *fileAdapter) Write(app string, message string) error {
 }
 
 // Read retrieves a specified number of log lines from an app-specific log file
-func (a *fileAdapter) Read(app string, lines int) ([]string, error) {
+func (a *fileAdapter) Read(app string, lines int, process string) ([]string, error) {
 	if lines <= 0 {
 		return []string{}, nil
 	}

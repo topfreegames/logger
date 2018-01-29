@@ -54,7 +54,8 @@ func processMessage(message *Message, storageAdapter storage.Adapter) error {
 	return nil
 }
 
-func HandleJsonTail(rawMessage []byte) (string, string) {
+// HandleJSONTail handles the tail of json messages
+func HandleJSONTail(rawMessage []byte) (string, string) {
 	message := new(Message)
 	if err := json.Unmarshal(rawMessage, message); err != nil {
 		message := new(MessageWithDockerString)
@@ -65,6 +66,7 @@ func HandleJsonTail(rawMessage []byte) (string, string) {
 	return processTailMessage(message)
 }
 
+// HandleMsgPackTail deals with tail for msgpack messages
 func HandleMsgPackTail(rawMessage []byte) (string, string) {
 	message := new(Message)
 	if err := msgpack.Unmarshal(rawMessage, message); err != nil {
@@ -80,10 +82,9 @@ func processTailMessage(message *Message) (string, string) {
 
 	if fromController(message) {
 		return getApplicationFromControllerMessage(message), buildControllerLogMessage(message)
-	} else {
-		labels := message.Kubernetes.Labels
-		return labels["app"], buildApplicationLogMessage(message)
 	}
+	labels := message.Kubernetes.Labels
+	return labels["app"], buildApplicationLogMessage(message)
 }
 
 func fromController(message *Message) bool {

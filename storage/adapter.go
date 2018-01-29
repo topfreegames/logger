@@ -4,7 +4,7 @@ package storage
 type Adapter interface {
 	Start()
 	Write(string, string) error
-	Read(string, int) ([]string, error)
+	Read(string, int, string) ([]string, error)
 	Destroy(string) error
 	Reopen() error
 	Stop()

@@ -48,9 +48,12 @@ func (a *elasticsearchAdapter) Write(app string, messageBody string) error {
 }
 
 // Read retrieves a specified number of log lines from an app-specific list in redis
-func (a *elasticsearchAdapter) Read(app string, lines int) ([]string, error) {
+func (a *elasticsearchAdapter) Read(app string, lines int, process string) ([]string, error) {
 	ctx := context.Background()
 	termQuery := elastic.NewTermQuery("kubernetes.labels.app", app)
+	if process != "" {
+		termQuery = elastic.NewTermQuery("kubernetes.container.name", fmt.Sprintf("%s-%s", app, process))
+	}
 	searchResult, err := a.esClient.Search().
 		Index(fmt.Sprintf(a.indexTemplate, app)).
 		Query(termQuery).

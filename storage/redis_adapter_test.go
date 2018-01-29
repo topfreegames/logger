@@ -15,7 +15,7 @@ func TestRedisReadFromNonExistingApp(t *testing.T) {
 		t.Error(err)
 	}
 	// No logs have been written; there should be no redis list for app
-	messages, err := a.Read(app, 10)
+	messages, err := a.Read(app, 10, "")
 	if messages != nil {
 		t.Error("Expected no messages, but got some")
 	}
@@ -55,7 +55,7 @@ func TestRedisLogs(t *testing.T) {
 	// there are 50 queued up OR a 1 second timeout has been reached.
 	time.Sleep(time.Second * 2)
 	// Read more logs than there are
-	messages, err := a.Read(app, 8)
+	messages, err := a.Read(app, 8, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -64,7 +64,7 @@ func TestRedisLogs(t *testing.T) {
 		t.Errorf("only expected 5 log messages, got %d", len(messages))
 	}
 	// Read fewer logs than there are
-	messages, err = a.Read(app, 3)
+	messages, err = a.Read(app, 3, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -88,7 +88,7 @@ func TestRedisLogs(t *testing.T) {
 	// there are 50 queued up OR a 1 second timeout has been reached.
 	time.Sleep(time.Second * 2)
 	// Read more logs than the buffer can hold
-	messages, err = a.Read(app, 20)
+	messages, err = a.Read(app, 20, "")
 	if err != nil {
 		t.Error(err)
 	}

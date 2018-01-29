@@ -11,8 +11,7 @@ import (
 	"github.com/deis/logger/storage"
 )
 
-// TODO(bacongobbler): stop relying that port 6666 is not in use
-var testBindAddr string = "127.0.0.1:6666"
+var testBindAddr = "127.0.0.1:6666"
 
 // testListener provides a net.Listener for testing, panicking if it cannot listen on that
 // address.

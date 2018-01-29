@@ -89,7 +89,7 @@ func (a *ringBufferAdapter) Write(app string, message string) error {
 }
 
 // Read retrieves a specified number of log lines from an app-specific ringBuffer
-func (a *ringBufferAdapter) Read(app string, lines int) ([]string, error) {
+func (a *ringBufferAdapter) Read(app string, lines int, process string) ([]string, error) {
 	rb, ok := a.ringBuffers[app]
 	if ok {
 		data := rb.read(lines)

@@ -12,7 +12,7 @@ import (
 
 type nsqAggregator struct {
 	listening bool
-	cfg       *config
+	cfg       *Config
 	consumer  *nsq.Consumer
 	handler   nsq.HandlerFunc
 }

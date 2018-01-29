@@ -10,7 +10,7 @@ import (
 )
 
 func TestNsqURL(t *testing.T) {
-	c := config{
+	c := Config{
 		NSQHost: "somehost",
 		NSQPort: 3333,
 	}
@@ -18,7 +18,7 @@ func TestNsqURL(t *testing.T) {
 }
 
 func TestStopTimeoutDuration(t *testing.T) {
-	c := config{
+	c := Config{
 		StopTimeoutSeconds: 60,
 	}
 	assert.Equal(t, c.stopTimeoutDuration(), time.Duration(c.StopTimeoutSeconds)*time.Second)

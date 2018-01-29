@@ -49,7 +49,8 @@ func (h requestHandler) getLogs(w http.ResponseWriter, r *http.Request) {
 			logLines = 100
 		}
 	}
-	logs, err := h.storageAdapter.Read(app, logLines)
+	process := r.URL.Query().Get("process")
+	logs, err := h.storageAdapter.Read(app, logLines, process)
 	if err != nil {
 		log.Println(err)
 		if strings.HasPrefix(err.Error(), "Could not find logs for") {
@@ -144,7 +145,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 					var message string
 
 					if cfg.MessageType == "json" {
-						label, message = logger.HandleJsonTail(e.Value)
+						label, message = logger.HandleJSONTail(e.Value)
 					} else {
 						label, message = logger.HandleMsgPackTail(e.Value)
 					}

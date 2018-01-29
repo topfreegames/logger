@@ -16,7 +16,7 @@ func TestRingBufferReadFromNonExistingApp(t *testing.T) {
 		t.Fatalf("returned adapter was not a ringBuffer")
 	}
 	// No logs have been writter; there should be no ringBuffer for app
-	messages, err := a.Read(app, 10)
+	messages, err := a.Read(app, 10, "")
 	if messages != nil {
 		t.Error("Expected no messages, but got some")
 	}
@@ -51,7 +51,7 @@ func TestRingBufferLogs(t *testing.T) {
 		}
 	}
 	// Read more logs than there are
-	messages, err := a.Read(app, 8)
+	messages, err := a.Read(app, 8, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -60,7 +60,7 @@ func TestRingBufferLogs(t *testing.T) {
 		t.Errorf("only expected 5 log messages, got %d", len(messages))
 	}
 	// Read fewer logs than there are
-	messages, err = a.Read(app, 3)
+	messages, err = a.Read(app, 3, "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -81,7 +81,7 @@ func TestRingBufferLogs(t *testing.T) {
 		}
 	}
 	// Read more logs than the buffer can hold
-	messages, err = a.Read(app, 20)
+	messages, err = a.Read(app, 20, "")
 	if err != nil {
 		t.Error(err)
 	}

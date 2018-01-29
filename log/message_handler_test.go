@@ -81,7 +81,7 @@ func TestHandleValidAppMessage(t *testing.T) {
 	assert.NoError(t, err, "error creating ring buffer")
 	err = handle([]byte(validAppMessage), a)
 	assert.NoError(t, err, "error occured storing log message")
-	expected, _ := a.Read("foo", 1)
+	expected, _ := a.Read("foo", 1, "cmd")
 	assert.Equal(t, expected[0],
 		"2016-10-18T20:29:38+00:00 foo[web.v2.nzf60]: test message",
 		"failed to aquire application log message")
@@ -92,7 +92,7 @@ func TestHandleValidControllerMessage(t *testing.T) {
 	assert.NoError(t, err, "error creating ring buffer")
 	err = handle([]byte(validControllerMessage), a)
 	assert.NoError(t, err, "error occured storing log message")
-	expected, _ := a.Read("foo", 1)
+	expected, _ := a.Read("foo", 1, "cmd")
 	assert.Equal(t, expected[0],
 		"2016-10-18T20:29:38+00:00 deis[controller]: INFO admin deployed 2fd9226",
 		"failed to aquire controller log message")
@@ -103,7 +103,7 @@ func TestHandleInvalidAppMessage(t *testing.T) {
 	assert.NoError(t, err, "error creating ring buffer")
 	err = handle([]byte(validAppMessage), a)
 	assert.NoError(t, err, "error occured storing log message")
-	expected, _ := a.Read("foo", 1)
+	expected, _ := a.Read("foo", 1, "cmd")
 	assert.Equal(t, expected[0],
 		"2016-10-18T20:29:38+00:00 foo[web.v2.nzf60]: test message",
 		"failed to aquire application log message")

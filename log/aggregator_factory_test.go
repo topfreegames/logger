@@ -16,7 +16,7 @@ func (a *stubStorageAdapter) Write(app string, message string) error {
 	return nil
 }
 
-func (a *stubStorageAdapter) Read(app string, lines int) ([]string, error) {
+func (a *stubStorageAdapter) Read(app string, lines int, process string) ([]string, error) {
 	return []string{}, nil
 }
 

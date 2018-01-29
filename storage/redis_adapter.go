@@ -136,7 +136,7 @@ func (a *redisAdapter) Write(app string, messageBody string) error {
 }
 
 // Read retrieves a specified number of log lines from an app-specific list in redis
-func (a *redisAdapter) Read(app string, lines int) ([]string, error) {
+func (a *redisAdapter) Read(app string, lines int, process string) ([]string, error) {
 	stringSliceCmd := a.redisClient.LRange(app, int64(-1*lines), -1)
 	result, err := stringSliceCmd.Result()
 	if err != nil {

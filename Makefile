@@ -2,7 +2,7 @@ SHELL = /bin/bash
 GO = go
 GOFMT = gofmt -l
 GOLINT = golint
-GOTEST = $(GO) test --cover --race -v
+GOTEST = $(GO) test -v --cover --race
 GOVET = $(GO) vet
 GO_FILES = $(wildcard *.go)
 GO_PACKAGES = storage log weblog
@@ -16,7 +16,7 @@ REPO_PATH = github.com/deis/logger
 # and other build options
 # toggle DEV_ENV_IMAGE to run tests / build
 DEV_ENV_IMAGE := quay.io/tfgco/go-dev:v1.5.1
-# DEV_ENV_IMAGE := quay.io/deis/go-dev:0.20.0
+# DEV_ENV_IMAGE := quay.io/deis/go-dev:v1.8.1
 DEV_ENV_WORK_DIR := /go/src/${REPO_PATH}
 DEV_ENV_OPTS := --rm -v ${CURDIR}:${DEV_ENV_WORK_DIR} -w ${DEV_ENV_WORK_DIR}
 DEV_ENV_CMD := docker run ${DEV_ENV_OPTS} ${DEV_ENV_IMAGE}
@@ -127,7 +127,11 @@ stop-test-elasticsearch:
 	docker kill ${ELASTICSEARCH_CONTAINER_NAME}
 	docker rm ${ELASTICSEARCH_CONTAINER_NAME}
 
-test-unit: start-test-redis start-test-nsq start-test-elasticsearch
+test-start-deps: start-test-redis start-test-nsq start-test-elasticsearch
+
+test-unit: test-start-deps test-run
+
+test-run:
 	docker run ${DEV_ENV_OPTS} \
 		--link ${REDIS_CONTAINER_NAME}:TEST_REDIS \
 		--link ${NSQ_CONTAINER_NAME}:TEST_NSQ \
