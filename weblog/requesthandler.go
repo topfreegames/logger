@@ -13,6 +13,7 @@ import (
 	"github.com/deis/logger/storage"
 	"github.com/ghostec/stern/stern"
 	"github.com/gorilla/mux"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 const (
@@ -88,6 +89,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		Writer:         writer,
 		PodQuery:       regexp.MustCompile(".*"),
 		ContainerQuery: regexp.MustCompile(".*"),
+		LabelSelector:  labels.Everything(),
 	}
 
 	go func() {
