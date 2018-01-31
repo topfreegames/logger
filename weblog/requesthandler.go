@@ -83,7 +83,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(context.Background())
 	cfg := &stern.Config{
 		KubeConfig:     "/opt/logger/sbin/kubeconfig",
-		ContextName:    "stag",
+		ContextName:    "kube-stag.tfgco.com",
 		Namespace:      app,
 		Writer:         writer,
 		PodQuery:       regexp.MustCompile(".*"),
@@ -99,7 +99,10 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprintf(write, "%s\n", strings.TrimSuffix(message, "\n"))
 
 	log.Println("Tail started.")
-	go stern.Run(ctx, cfg)
+	go func() {
+		err := stern.Run(ctx, cfg)
+		fmt.Printf("error: %#v\n", err)
+	}()
 	io.Copy(w, reader)
 	<-ctx.Done()
 	log.Println("Tail Closed.")
