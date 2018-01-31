@@ -1,19 +1,18 @@
 package weblog
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/gorilla/mux"
-	uuid "github.com/satori/go.uuid"
-
-	logger "github.com/deis/logger/log"
 	"github.com/deis/logger/storage"
+	"github.com/gorilla/mux"
+	"github.com/wercker/stern/stern"
 )
 
 const (
@@ -76,104 +75,32 @@ func (h requestHandler) deleteLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
-	connectionOpen := true
 	notify := w.(http.CloseNotifier).CloseNotify()
-	read, write := io.Pipe()
+	app := mux.Vars(r)["app"]
+	// process := r.URL.Query().Get("process")
+	reader, writer := io.Pipe()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cfg := &stern.Config{
+		KubeConfig:     "~/.kube/config",
+		ContextName:    "stag",
+		Namespace:      app,
+		Writer:         writer,
+		PodQuery:       regexp.MustCompile(".*"),
+		ContainerQuery: regexp.MustCompile(".*"),
+	}
 
 	go func() {
 		<-notify
 		log.Println("Tail connection closed.")
-		connectionOpen = false
+		cancel()
 	}()
 
-	app := mux.Vars(r)["app"]
-	process := r.URL.Query().Get("process")
-
-	tailTopic := "^logs-" + app + "-" + ".*"
-
-	if process != "" {
-		tailTopic = "logs-" + app + "-" + process
-	}
-
-	cfg, err := logger.ParseConfig(appName)
-	if err != nil {
-		log.Printf("config error: %s: ", err)
-		return
-	}
+	// fmt.Fprintf(write, "%s\n", strings.TrimSuffix(message, "\n"))
 
 	log.Println("Tail started.")
-
-	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":               cfg.KafkaBrokers,
-		"group.id":                        "logs-tail-" + uuid.NewV4().String(),
-		"go.events.channel.enable":        true,
-		"go.application.rebalance.enable": true,
-		"enable.auto.commit":              false,
-		"default.topic.config": kafka.ConfigMap{
-			"auto.offset.reset":  "latest",
-			"auto.commit.enable": false,
-		},
-	})
-
-	if err != nil {
-		log.Printf("kafka error: %s: ", err)
-		return
-	}
-
-	log.Printf("Tail on topic: %s", tailTopic)
-
-	c.Subscribe(tailTopic, nil)
-
-	go func() {
-		defer write.Close()
-		for connectionOpen == true {
-			select {
-			case ev := <-c.Events():
-				switch e := ev.(type) {
-				case kafka.AssignedPartitions:
-					err = c.Assign(e.Partitions)
-					if err != nil {
-						log.Println("[Tail] Failed to assign partitions.")
-					}
-				case kafka.RevokedPartitions:
-					err = c.Unassign()
-					if err != nil {
-						log.Println("[Tail] Failed to unassign partitions.")
-					}
-				case *kafka.Message:
-					var label string
-					var message string
-
-					if cfg.MessageType == "json" {
-						label, message = logger.HandleJSONTail(e.Value)
-					} else {
-						label, message = logger.HandleMsgPackTail(e.Value)
-					}
-
-					if label == app {
-						fmt.Fprintf(write, "%s\n", strings.TrimSuffix(message, "\n"))
-					}
-				case kafka.PartitionEOF:
-				case kafka.Error:
-					connectionOpen = false
-				default:
-					log.Println("[Tail] ignored kafka event")
-				}
-			}
-		}
-	}()
-	io.Copy(w, read)
-
-	err = c.Unsubscribe()
-	if err != nil {
-		log.Printf("kafka unsubscribe error: %s: ", err)
-		return
-	}
-
-	err = c.Close()
-	if err != nil {
-		log.Printf("kafka close error: %s: ", err)
-		return
-	}
+	go stern.Run(ctx, cfg)
+	io.Copy(w, reader)
+	<-ctx.Done()
 	log.Println("Tail Closed.")
 }
