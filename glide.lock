@@ -1,5 +1,5 @@
-hash: 5dcdb0024b0c6ae3e6dca6b641ab6f4b04e7ce3cb49a7b3a15ac35c44cd92143
-updated: 2018-01-31T18:25:44.894796869-02:00
+hash: 94befbbb69446020d6ddb0931e0b35c36be51504b09b062b6ab5ebbcbd5f55cb
+updated: 2018-01-31T18:41:49.416586677-02:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -274,6 +274,11 @@ imports:
   - util/homedir
   - util/integer
   - util/jsonpath
+- name: k8s.io/kube-openapi
+  version: a07b7bbb58e7fdc5144f8d7046331d29fc9ad3b3
+  subpackages:
+  - pkg/common
+  - pkg/util/proto
 testImports:
 - name: github.com/davecgh/go-spew
   version: 782f4967f2dc4564575ca782fe2d04090b5faca8
