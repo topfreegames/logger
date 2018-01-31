@@ -240,7 +240,7 @@ func TestESLogsWithProcess(t *testing.T) {
 		}
 	}
 
-	messages, err := a.Read(app, 8, "web")
+	messages, err = a.Read(app, 8, "web")
 	if err != nil {
 		t.Error(err)
 	}
