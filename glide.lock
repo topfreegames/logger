@@ -1,15 +1,11 @@
-hash: ff4c2b60ad4fa2ff2c1e7440d65a83db734e85ef2d468221ec7e559fd3def22e
-updated: 2018-01-31T14:43:38.646900937-02:00
+hash: 94befbbb69446020d6ddb0931e0b35c36be51504b09b062b6ab5ebbcbd5f55cb
+updated: 2018-01-31T15:54:41.931529719-02:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
   subpackages:
   - compute/metadata
   - internal
-- name: github.com/confluentinc/confluent-kafka-go
-  version: a9b5c269c66e9a2eb5f195563b2f01e65a84c527
-  subpackages:
-  - kafka
 - name: github.com/davecgh/go-spew
   version: 782f4967f2dc4564575ca782fe2d04090b5faca8
   subpackages:
@@ -24,6 +20,10 @@ imports:
   version: 5df930a27be2502f99b292b7cc09ebad4d0891f4
 - name: github.com/ghodss/yaml
   version: 73d445a93680fa1a78ae23a5839bad48f32ba1ee
+- name: github.com/ghostec/stern
+  version: 61d54af05e01ca8e96fd60ad546b15334556841e
+  subpackages:
+  - stern
 - name: github.com/go-openapi/jsonpointer
   version: 46af16f9f7b149af66e5d1bd010e3574dc06de98
 - name: github.com/go-openapi/jsonreference
@@ -115,7 +115,6 @@ imports:
   version: b04b5491222d9743529cb859a20d34ce2bb763af
   subpackages:
   - kubernetes
-  - stern
 - name: golang.org/x/crypto
   version: 81e90905daefcd6fd217b62423c0908922eadb30
   subpackages:

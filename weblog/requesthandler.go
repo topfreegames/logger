@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/deis/logger/storage"
+	"github.com/ghostec/stern/stern"
 	"github.com/gorilla/mux"
-	"github.com/wercker/stern/stern"
 )
 
 const (
@@ -82,7 +82,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cfg := &stern.Config{
-		KubeConfig:     "~/.kube/config",
+		KubeConfig:     "/opt/logger/sbin/kubeconfig",
 		ContextName:    "stag",
 		Namespace:      app,
 		Writer:         writer,
