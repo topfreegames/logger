@@ -1,23 +1,17 @@
-hash: 94befbbb69446020d6ddb0931e0b35c36be51504b09b062b6ab5ebbcbd5f55cb
-updated: 2018-01-31T18:41:49.416586677-02:00
+hash: 0de1ee34dc85f9f15b0c14448b34d3b7576174c0f309622f135f7495ce34d82b
+updated: 2018-01-31T21:08:30.100381607-02:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
   subpackages:
   - compute/metadata
   - internal
-- name: github.com/emicklei/go-restful
-  version: ff4f55a206334ef123e4f79bbf348980da81ca46
-  subpackages:
-  - log
-- name: github.com/emicklei/go-restful-swagger12
-  version: dcef7f55730566d41eae5db10e7d6981829720f6
 - name: github.com/fatih/color
   version: 5df930a27be2502f99b292b7cc09ebad4d0891f4
 - name: github.com/ghodss/yaml
   version: 73d445a93680fa1a78ae23a5839bad48f32ba1ee
 - name: github.com/ghostec/stern
-  version: 61d54af05e01ca8e96fd60ad546b15334556841e
+  version: 2bea36d4014497d6853e4d2d6303c204d702f6d3
   subpackages:
   - stern
 - name: github.com/gogo/protobuf
@@ -37,8 +31,6 @@ imports:
   - ptypes/timestamp
 - name: github.com/golang/snappy
   version: 553a641470496b2327abcac10b36396bd98e45c9
-- name: github.com/google/btree
-  version: 7d79101e329e5a3adf994758c578dab82b90c017
 - name: github.com/google/gofuzz
   version: 44d81051d367757e1c7c6a5a86423ece9afcf63c
 - name: github.com/googleapis/gnostic
@@ -50,11 +42,7 @@ imports:
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
-  version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
-- name: github.com/gregjones/httpcache
-  version: 787624de3eb7bd915c329cba748687a3b22666a6
-  subpackages:
-  - diskcache
+  version: c0091a029979286890368b4c7b301261e448e242
 - name: github.com/howeyc/gopass
   version: bf9dde6d0d2c004a008c27aaee91170c786f6db8
 - name: github.com/imdario/mergo
@@ -64,7 +52,13 @@ imports:
 - name: github.com/juju/ratelimit
   version: 5b9ff866471762aa2ab2dced63c9fb6f53921342
 - name: github.com/kelseyhightower/envconfig
-  version: bc1350181c239ebcef7a398f576160021f5dfed6
+  version: 462fda1f11d8cad3660e52737b8beefd27acfb3f
+- name: github.com/mailru/easyjson
+  version: 32fa128f234d041f196a9f3e0fea5ac9772c08e1
+  subpackages:
+  - buffer
+  - jlexer
+  - jwriter
 - name: github.com/mattn/go-colorable
   version: 5411d3eea5978e6cdc258b30de592b60df6aba96
   repo: https://github.com/mattn/go-colorable
@@ -72,9 +66,7 @@ imports:
   version: 57fdcb988a5c543893cc61bce354a6e24ab70022
   repo: https://github.com/mattn/go-isatty
 - name: github.com/nsqio/go-nsq
-  version: 1336c299dd900d045fb6df51fc02adf26cde5414
-- name: github.com/peterbourgon/diskv
-  version: 5f041e8faa004a95c88a202771f4cc3e991971e6
+  version: 8c1ff52dff6fd3ecc19c418649bc643b18e862fc
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/satori/go.uuid
@@ -90,7 +82,7 @@ imports:
   subpackages:
   - codes
 - name: github.com/wercker/stern
-  version: b04b5491222d9743529cb859a20d34ce2bb763af
+  version: fe7e26ce309452cf480a522afee3dc2f90dd179e
   subpackages:
   - kubernetes
 - name: golang.org/x/crypto
@@ -130,7 +122,7 @@ imports:
   - unicode/bidi
   - unicode/norm
 - name: google.golang.org/appengine
-  version: d9a072cfa7b9736e44311ef77b3e09d804bfa599
+  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:
   - datastore
   - internal
@@ -147,7 +139,7 @@ imports:
 - name: gopkg.in/inf.v0
   version: 3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4
 - name: gopkg.in/olivere/elastic.v5
-  version: 75b071e35066bfb592a0d770e4cd1e5a5e45edf0
+  version: 1094ee281ca61a783c9ba22bf86e7e0a8aa2d112
   subpackages:
   - config
   - uritemplates
@@ -161,9 +153,11 @@ imports:
 - name: gopkg.in/yaml.v2
   version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
 - name: k8s.io/api
-  version: 6c6dac0277229b9e9578c5ca3f74a4345d35cdc2
+  version: dc0dd48d5a5cae9f8736bb0643cfe6052e450f1b
   subpackages:
   - admissionregistration/v1alpha1
+  - admissionregistration/v1beta1
+  - apps/v1
   - apps/v1beta1
   - apps/v1beta2
   - authentication/v1
@@ -177,6 +171,7 @@ imports:
   - batch/v2alpha1
   - certificates/v1beta1
   - core/v1
+  - events/v1beta1
   - extensions/v1beta1
   - networking/v1
   - policy/v1beta1
@@ -186,6 +181,7 @@ imports:
   - scheduling/v1alpha1
   - settings/v1alpha1
   - storage/v1
+  - storage/v1alpha1
   - storage/v1beta1
 - name: k8s.io/apimachinery
   version: b621949a1923cee3fce8bca9613e9a83609f0bbc
@@ -226,12 +222,14 @@ imports:
   - pkg/watch
   - third_party/forked/golang/reflect
 - name: k8s.io/client-go
-  version: 2ae454230481a7cb5544325e12ad7658ecccd19b
+  version: 4b76cf9824ec474ca9b122449fee23807a51e786
   subpackages:
   - discovery
   - kubernetes
   - kubernetes/scheme
   - kubernetes/typed/admissionregistration/v1alpha1
+  - kubernetes/typed/admissionregistration/v1beta1
+  - kubernetes/typed/apps/v1
   - kubernetes/typed/apps/v1beta1
   - kubernetes/typed/apps/v1beta2
   - kubernetes/typed/authentication/v1
@@ -245,6 +243,7 @@ imports:
   - kubernetes/typed/batch/v2alpha1
   - kubernetes/typed/certificates/v1beta1
   - kubernetes/typed/core/v1
+  - kubernetes/typed/events/v1beta1
   - kubernetes/typed/extensions/v1beta1
   - kubernetes/typed/networking/v1
   - kubernetes/typed/policy/v1beta1
@@ -254,6 +253,7 @@ imports:
   - kubernetes/typed/scheduling/v1alpha1
   - kubernetes/typed/settings/v1alpha1
   - kubernetes/typed/storage/v1
+  - kubernetes/typed/storage/v1alpha1
   - kubernetes/typed/storage/v1beta1
   - pkg/version
   - plugin/pkg/client/auth/gcp
@@ -274,11 +274,6 @@ imports:
   - util/homedir
   - util/integer
   - util/jsonpath
-- name: k8s.io/kube-openapi
-  version: a07b7bbb58e7fdc5144f8d7046331d29fc9ad3b3
-  subpackages:
-  - pkg/common
-  - pkg/util/proto
 testImports:
 - name: github.com/davecgh/go-spew
   version: 782f4967f2dc4564575ca782fe2d04090b5faca8

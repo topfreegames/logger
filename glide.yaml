@@ -17,6 +17,5 @@ import:
 - package: github.com/pkg/errors
   version: ^0.8.0
 - package: k8s.io/apimachinery
-  version: kubernetes-1.10.0-alpha.2
   subpackages:
   - pkg/labels

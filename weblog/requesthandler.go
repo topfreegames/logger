@@ -3,7 +3,7 @@ package weblog
 import (
 	"context"
 	"fmt"
-	"io"
+	//"io"
 	"log"
 	"net/http"
 	"regexp"
@@ -79,14 +79,16 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	notify := w.(http.CloseNotifier).CloseNotify()
 	app := mux.Vars(r)["app"]
 	// process := r.URL.Query().Get("process")
-	reader, writer := io.Pipe()
+	// reader, writer := io.Pipe()
+
+	// notify doesn't stop io.Copy
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cfg := &stern.Config{
 		KubeConfig:     "/opt/logger/sbin/kubeconfig",
 		ContextName:    "kube-stag.tfgco.com",
 		Namespace:      app,
-		Writer:         writer,
+		Writer:         w,
 		PodQuery:       regexp.MustCompile(".*"),
 		ContainerQuery: regexp.MustCompile(".*"),
 		LabelSelector:  labels.Everything(),
@@ -98,14 +100,16 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		cancel()
 	}()
 
-	// fmt.Fprintf(write, "%s\n", strings.TrimSuffix(message, "\n"))
-
 	log.Println("Tail started.")
+	connOpen := make(chan bool, 1)
 	go func() {
 		err := stern.Run(ctx, cfg)
-		fmt.Printf("error: %#v\n", err)
+		if err != nil {
+			fmt.Printf("error: %#v\n", err)
+		}
+		connOpen <- true
 	}()
-	io.Copy(w, reader)
-	<-ctx.Done()
+	//io.Copy(w, reader)
+	<-connOpen
 	log.Println("Tail Closed.")
 }
