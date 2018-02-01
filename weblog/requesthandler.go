@@ -101,15 +101,12 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	log.Println("Tail started.")
-	connOpen := make(chan bool, 1)
 	go func() {
 		err := stern.Run(ctx, cfg)
 		if err != nil {
 			fmt.Printf("error: %#v\n", err)
 		}
-		connOpen <- true
 	}()
-	//io.Copy(w, reader)
-	<-connOpen
+	<-ctx.Done()
 	log.Println("Tail Closed.")
 }
