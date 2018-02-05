@@ -23,6 +23,8 @@ type Config struct {
 	NSQChannel         string `envconfig:"NSQ_CHANNEL" default:"consume"`
 	NSQHandlerCount    int    `envconfig:"NSQ_HANDLER_COUNT" default:"30"`
 	StopTimeoutSeconds int    `envconfig:"AGGREGATOR_STOP_TIMEOUT_SEC" default:"1"`
+	KubeConfigPath     string `envconfig:"KUBE_CONFIG_PATH" default:"~/.kube/config"`
+	KubeContextName    string `envconfig:"KUBE_CONTEXT_NAME" default:"stag"`
 }
 
 func (c Config) nsqURL() string {

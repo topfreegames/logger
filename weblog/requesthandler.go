@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	logger "github.com/deis/logger/log"
 	"github.com/deis/logger/storage"
 	"github.com/ghostec/stern/stern"
 	"github.com/gorilla/mux"
@@ -75,25 +76,30 @@ func (h requestHandler) deleteLogs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
-	reqContext = r.Context()
-	app := mux.Vars(r)["app"]
-	// process := r.URL.Query().Get("process")
-	// reader, writer := io.Pipe()
+var sternCfg *stern.Config
 
-	// notify doesn't stop io.Copy
+func initStern() {
+	cfg, err := logger.ParseConfig(appName)
+	if err != nil {
+		log.Fatalf("config error: %s: ", err)
+	}
 
-	ctx, cancel := context.WithCancel(reqContext)
-	cfg := &stern.Config{
-		KubeConfig:     "/opt/logger/sbin/kubeconfig",
-		ContextName:    "kube-stag.tfgco.com",
-		Namespace:      app,
-		Writer:         w,
+	sternCfg = &stern.Config{
+		KubeConfig:     cfg.KubeConfigPath,
+		ContextName:    cfg.KubeContextName,
+		Namespace:      "",
+		Writer:         nil,
 		PodQuery:       regexp.MustCompile(".*"),
 		ContainerQuery: regexp.MustCompile(".*"),
 		LabelSelector:  labels.Everything(),
 	}
+}
 
+func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
+	reqContext := r.Context()
+	app := mux.Vars(r)["app"]
+
+	ctx, cancel := context.WithCancel(reqContext)
 	go func() {
 		<-reqContext.Done()
 		log.Println("Tail connection closed.")
@@ -102,6 +108,11 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Tail started.")
 	go func() {
+		cfg := &stern.Config{}
+		*cfg = *sternCfg
+		cfg.Namespace = app
+		cfg.Writer = w
+
 		err := stern.Run(ctx, cfg)
 		if err != nil {
 			fmt.Printf("error: %#v\n", err)

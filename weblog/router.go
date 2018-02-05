@@ -6,6 +6,7 @@ import (
 
 func newRouter(rh *requestHandler) *mux.Router {
 	r := mux.NewRouter()
+	initStern() // tailLogs
 	r.HandleFunc("/healthz", rh.getHealthz).Methods("GET")
 	r.HandleFunc("/healthz/", rh.getHealthz).Methods("GET")
 	r.HandleFunc("/logs/{app}", rh.getLogs).Methods("GET")

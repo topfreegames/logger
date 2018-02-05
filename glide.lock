@@ -1,5 +1,5 @@
 hash: 0de1ee34dc85f9f15b0c14448b34d3b7576174c0f309622f135f7495ce34d82b
-updated: 2018-01-31T21:08:30.100381607-02:00
+updated: 2018-02-05T14:38:24.986665183-02:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -153,7 +153,7 @@ imports:
 - name: gopkg.in/yaml.v2
   version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
 - name: k8s.io/api
-  version: dc0dd48d5a5cae9f8736bb0643cfe6052e450f1b
+  version: 65f67c9cb59d466d2eb758ad9d5ad016eb43c2aa
   subpackages:
   - admissionregistration/v1alpha1
   - admissionregistration/v1beta1
@@ -222,7 +222,7 @@ imports:
   - pkg/watch
   - third_party/forked/golang/reflect
 - name: k8s.io/client-go
-  version: 4b76cf9824ec474ca9b122449fee23807a51e786
+  version: e2d750fcad023e759abc09adcbe3706a6126020d
   subpackages:
   - discovery
   - kubernetes
