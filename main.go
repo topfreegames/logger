@@ -36,6 +36,7 @@ func main() {
 	l.Println("Log aggregator running")
 
 	weblogServer := weblog.NewServer(storageAdapter)
+	weblogServer := weblog.NewServer(nil)
 	weblogServer.Start()
 	defer weblogServer.Close()
 	l.Printf("Weblog server serving at %s\n", weblogServer.URL)
