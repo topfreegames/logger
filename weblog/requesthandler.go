@@ -76,13 +76,14 @@ func (h requestHandler) deleteLogs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	reqContext = r.Context()
 	app := mux.Vars(r)["app"]
 	// process := r.URL.Query().Get("process")
 	// reader, writer := io.Pipe()
 
 	// notify doesn't stop io.Copy
 
+	ctx, cancel := context.WithCancel(reqContext)
 	cfg := &stern.Config{
 		KubeConfig:     "/opt/logger/sbin/kubeconfig",
 		ContextName:    "kube-stag.tfgco.com",
@@ -92,6 +93,12 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		ContainerQuery: regexp.MustCompile(".*"),
 		LabelSelector:  labels.Everything(),
 	}
+
+	go func() {
+		<-reqContext.Done()
+		log.Println("Tail connection closed.")
+		cancel()
+	}()
 
 	log.Println("Tail started.")
 	go func() {
