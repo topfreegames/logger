@@ -3,17 +3,17 @@ package weblog
 import (
 	"context"
 	"fmt"
-	//"io"
 	"log"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	logger "github.com/deis/logger/log"
 	"github.com/deis/logger/storage"
-	"github.com/ghostec/stern/stern"
 	"github.com/gorilla/mux"
+	"github.com/topfreegames/stern/stern"
 	"k8s.io/apimachinery/pkg/labels"
 )
 
@@ -112,6 +112,7 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		*cfg = *sternCfg
 		cfg.Namespace = app
 		cfg.Writer = w
+		cfg.WriterMutex = &sync.Mutex{}
 
 		err := stern.Run(ctx, cfg)
 		if err != nil {

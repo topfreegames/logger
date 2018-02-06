@@ -1,5 +1,5 @@
 hash: 0de1ee34dc85f9f15b0c14448b34d3b7576174c0f309622f135f7495ce34d82b
-updated: 2018-02-05T14:38:24.986665183-02:00
+updated: 2018-02-06T11:21:00.110704607-02:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -10,10 +10,6 @@ imports:
   version: 5df930a27be2502f99b292b7cc09ebad4d0891f4
 - name: github.com/ghodss/yaml
   version: 73d445a93680fa1a78ae23a5839bad48f32ba1ee
-- name: github.com/ghostec/stern
-  version: 2bea36d4014497d6853e4d2d6303c204d702f6d3
-  subpackages:
-  - stern
 - name: github.com/gogo/protobuf
   version: c0656edd0d9eab7c66d1eb0c568f9039345796f7
   subpackages:
@@ -49,8 +45,6 @@ imports:
   version: 6633656539c1639d9d78127b7d47c622b5d7b6dc
 - name: github.com/json-iterator/go
   version: 13f86432b882000a51c6e610c620974462691a97
-- name: github.com/juju/ratelimit
-  version: 5b9ff866471762aa2ab2dced63c9fb6f53921342
 - name: github.com/kelseyhightower/envconfig
   version: 462fda1f11d8cad3660e52737b8beefd27acfb3f
 - name: github.com/mailru/easyjson
@@ -77,8 +71,12 @@ imports:
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
   - assert
+- name: github.com/topfreegames/stern
+  version: 1241aac2ff1a0b665607ba97e9162dc59fcb5bd2
+  subpackages:
+  - stern
 - name: github.com/vmihailenco/msgpack
-  version: a2885efdac59c3f72964b70a6b1d9f6053acea2a
+  version: dc204c3512c7b223a700006b2d5271824015ee84
   subpackages:
   - codes
 - name: github.com/wercker/stern
@@ -121,6 +119,10 @@ imports:
   - transform
   - unicode/bidi
   - unicode/norm
+- name: golang.org/x/time
+  version: f51c12702a4d776e4c1fa9b0fabab841babae631
+  subpackages:
+  - rate
 - name: google.golang.org/appengine
   version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:
@@ -184,7 +186,7 @@ imports:
   - storage/v1alpha1
   - storage/v1beta1
 - name: k8s.io/apimachinery
-  version: b621949a1923cee3fce8bca9613e9a83609f0bbc
+  version: b29a2d60548358f302231eeb5359d57ed9adebc2
   subpackages:
   - pkg/api/errors
   - pkg/api/meta
@@ -222,7 +224,7 @@ imports:
   - pkg/watch
   - third_party/forked/golang/reflect
 - name: k8s.io/client-go
-  version: e2d750fcad023e759abc09adcbe3706a6126020d
+  version: 5e622f37cd6ed5eebbb179245ac94fa895577c4a
   subpackages:
   - discovery
   - kubernetes
