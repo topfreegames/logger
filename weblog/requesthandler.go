@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	logger "github.com/deis/logger/log"
 	"github.com/deis/logger/storage"
@@ -120,5 +121,6 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 	<-ctx.Done()
+	time.Sleep(1000 * time.Millisecond)
 	log.Println("Tail Closed.")
 }
