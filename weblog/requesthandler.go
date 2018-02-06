@@ -99,6 +99,7 @@ func initStern() {
 func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 	reqContext := r.Context()
 	app := mux.Vars(r)["app"]
+	process := r.URL.Query().Get("process")
 
 	ctx, cancel := context.WithCancel(reqContext)
 	go func() {
@@ -114,6 +115,10 @@ func (h requestHandler) tailLogs(w http.ResponseWriter, r *http.Request) {
 		cfg.Namespace = app
 		cfg.Writer = w
 		cfg.WriterMutex = &sync.Mutex{}
+
+		if process != "" {
+			cfg.PodQuery = regexp.MustCompile(fmt.Sprintf("-%s-", process))
+		}
 
 		err := stern.Run(ctx, cfg)
 		if err != nil {
