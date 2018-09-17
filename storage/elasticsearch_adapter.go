@@ -7,7 +7,7 @@ import (
 	"log"
 	"reflect"
 
-	"gopkg.in/olivere/elastic.v5"
+	"gopkg.in/olivere/elastic.v6"
 )
 
 type elasticsearchAdapter struct {

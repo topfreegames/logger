@@ -140,8 +140,8 @@ imports:
   version: db14e161995a5177acef654cb0dd785e8ee8bc22
 - name: gopkg.in/inf.v0
   version: 3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4
-- name: gopkg.in/olivere/elastic.v5
-  version: 1094ee281ca61a783c9ba22bf86e7e0a8aa2d112
+- name: gopkg.in/olivere/elastic.v6
+  version: e6cae211ee802eab70248a68fe2cb03b616744c9
   subpackages:
   - config
   - uritemplates
